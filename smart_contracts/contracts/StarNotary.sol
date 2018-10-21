@@ -16,6 +16,21 @@ contract StarNotary is ERC721 {
     mapping(uint256 => uint256) public starsForSale;
     mapping(string => bool) coordinates;
 
+    function mint(uint256 _tokenId) public {
+        _mint(msg.sender, _tokenId);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     function createStar(string _name, string _deg, string _mag, string _cent, string _story, uint256 _tokenId) public { 
         string memory coords = coordinatesToString(_deg, _mag, _cent);
         require(!coordinates[coords], "a star with this coordinates already exists");
@@ -53,6 +68,8 @@ contract StarNotary is ERC721 {
     function checkIfStarExist(string _deg, string _mag, string _cent) public returns(bool) {
         return coordinates[coordinatesToString(_deg, _mag, _cent)];
     }
+
+    
 
 
 

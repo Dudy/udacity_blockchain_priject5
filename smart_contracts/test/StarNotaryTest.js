@@ -1,14 +1,17 @@
 const StarNotary = artifacts.require('StarNotary')
 
 contract('StarNotary', accounts => { 
+    var defaultAccount = accounts[0];
+    var user1 = accounts[1];
+    var user2 = accounts[2];
+    var operator = accounts[3];
 
     beforeEach(async function() { 
-        this.contract = await StarNotary.new({from: accounts[0]})
+        this.contract = await StarNotary.new({from: defaultAccount})
     })
     
     describe('star creation', () => {
         it('can create two stars with different coordinates and get their names', async function() {
-            let user1 = accounts[1];
             let starName1 = "Antares 1";
             let deg1 = "deg1";
             let mag1 = "mag1";
@@ -16,7 +19,6 @@ contract('StarNotary', accounts => {
             let story1 = "story1";
             let tokenId1 = 1;
 
-            let user2 = accounts[2];
             let starName2 = "Antares 2";
             let deg2 = "deg2";
             let mag2 = "mag2";
@@ -34,7 +36,6 @@ contract('StarNotary', accounts => {
         });
 
         it('cannot create two stars the same coordinates', async function() {
-            let user1 = accounts[1];
             let starName1 = "Antares 1";
             let deg1 = "deg1";
             let mag1 = "mag1";
@@ -42,7 +43,6 @@ contract('StarNotary', accounts => {
             let story1 = "story1";
             let tokenId1 = 1;
 
-            let user2 = accounts[2];
             let starName2 = "Antares 2";
             let deg2 = deg1;
             let mag2 = mag1;
@@ -56,9 +56,6 @@ contract('StarNotary', accounts => {
     });
 
     describe('buying and selling stars', () => {
-        let user1 = accounts[1];
-        let user2 = accounts[2];
-
         let starName = "Antares 1";
         let deg = "deg1";
         let mag = "mag1";
@@ -107,7 +104,6 @@ contract('StarNotary', accounts => {
     });
 
     describe('check star existance', () => {
-        let user1 = accounts[1];
         let starName = "Antares 1";
         let deg = "deg1";
         let mag = "mag1";
@@ -128,6 +124,28 @@ contract('StarNotary', accounts => {
             assert.equal(await this.contract.checkIfStarExist.call(differentDeg, mag, cent), false);
             assert.equal(await this.contract.checkIfStarExist.call(deg, differentMag, cent), false);
             assert.equal(await this.contract.checkIfStarExist.call(deg, mag, differentCent), false);
+        });
+    });
+
+    describe('can mint a token', () => {
+        let tokenId = 1;
+        let tx;
+
+        beforeEach(async function() {
+            tx = await this.contract.mint(tokenId, {from: user1});
+        });
+
+        it('ownerOf tokenId is user1', async function() {
+            assert.equal(await this.contract.ownerOf(tokenId), user1);
+        });
+
+        it('balanceOf user1 is incremented by 1', async function() {
+            let balance = await this.contract.balanceOf(user1);
+            assert.equal(balance.toNumber(), 1);
+        });
+
+        it('emits the correct event during creation of a new token', async function() {
+            assert.equal(tx.logs[0].event, 'Transfer');
         });
     });
 })
