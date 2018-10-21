@@ -6,7 +6,7 @@ contract StarNotary is ERC721 {
 
     struct Star { 
         string name;
-        string deg;
+        string dec;
         string mag;
         string cent;
         string story;
@@ -20,22 +20,15 @@ contract StarNotary is ERC721 {
         _mint(msg.sender, _tokenId);
     }
 
+    function SetApprovalForAll(address to, bool approved) public {
+        setApprovalForAll(to, approved);
+    }
 
-
-
-
-
-
-
-
-
-
-
-    function createStar(string _name, string _deg, string _mag, string _cent, string _story, uint256 _tokenId) public { 
-        string memory coords = coordinatesToString(_deg, _mag, _cent);
+    function createStar(string _name, string _dec, string _mag, string _cent, string _story, uint256 _tokenId) public { 
+        string memory coords = coordinatesToString(_dec, _mag, _cent);
         require(!coordinates[coords], "a star with this coordinates already exists");
 
-        Star memory newStar = Star(_name, _deg, _mag, _cent, _story);
+        Star memory newStar = Star(_name, _dec, _mag, _cent, _story);
         tokenIdToStarInfo[_tokenId] = newStar;
         coordinates[coords] = true;
 
@@ -65,38 +58,12 @@ contract StarNotary is ERC721 {
         }
     }
 
-    function checkIfStarExist(string _deg, string _mag, string _cent) public returns(bool) {
-        return coordinates[coordinatesToString(_deg, _mag, _cent)];
+    function checkIfStarExist(string _dec, string _mag, string _cent) public returns(bool) {
+        return coordinates[coordinatesToString(_dec, _mag, _cent)];
     }
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function coordinatesToString(string _cent, string _deg, string _mag) internal returns(string) {
-        return strConcat(_cent, "_", _deg, "_", _mag);
+    function coordinatesToString(string _cent, string _dec, string _mag) internal returns(string) {
+        return strConcat(_cent, "_", _dec, "_", _mag);
     }
 
     // string concatenation taken from https://ethereum.stackexchange.com/questions/729/how-to-concatenate-strings-in-solidity
