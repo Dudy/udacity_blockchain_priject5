@@ -181,7 +181,7 @@ contract('StarNotary', accounts => {
         });
 
         it('user2 can now transfer', async function() {
-            await this.contract.transferFrom(user1, user2, tokenId, {from: user2});
+            await this.contract.safeTransferFrom(user1, user2, tokenId, {from: user2});
             assert.equal(await this.contract.ownerOf(tokenId), user2);
         });
 
@@ -199,7 +199,7 @@ contract('StarNotary', accounts => {
 
         beforeEach(async function() {
             await this.contract.mint(tokenId, {from: user1});
-            tx = await this.contract.setApprovalForAll(operator, true, {from: user1});
+            tx = await this.contract.SetApprovalForAll(operator, true, {from: user1});
         });
 
         it('can set an operator', async function() {
